@@ -45,6 +45,48 @@
       user-select: none;
     }
 
+    /* ── EMAIL TAPPABLE OVERRIDE ── */
+    .email-link {
+      pointer-events: all !important;
+      cursor: pointer !important;
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(0, 229, 200, 0.5);
+      padding-bottom: 1px;
+      transition: color .2s, border-color .2s;
+      display: inline-block;
+      word-break: break-all;
+      overflow-wrap: break-word;
+    }
+    .email-link:hover {
+      color: var(--cyan);
+      border-color: var(--cyan);
+    }
+
+    /* ── COPY TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--cyan);
+      color: #060d1a;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      padding: .6rem 1.4rem;
+      border-radius: 50px;
+      opacity: 0;
+      transition: opacity .3s, transform .3s;
+      z-index: 9999;
+      white-space: nowrap;
+      pointer-events: none !important;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
     /* ── NOISE OVERLAY ── */
     body::before {
       content: '';
@@ -426,7 +468,10 @@
       line-height: 1.6;
     }
 
-    /* ── FOOTER ── */
+    .contact-detail {
+      min-width: 0;
+      flex: 1;
+    }
     footer {
       background: var(--surface);
       border-top: 1px solid var(--border);
@@ -500,6 +545,9 @@
 
 <body>
 
+  <!-- ── COPY TOAST ── -->
+  <div id="toast">✓ Email copied to clipboard!</div>
+
   <!-- ── HERO ── -->
   <section id="hero">
     <div class="hero-glow"></div>
@@ -522,10 +570,6 @@
         <div class="stat-num">30+</div>
         <div class="stat-label">Experiments</div>
       </div>
-      <!-- <div class="stat-item">
-      <div class="stat-num">10+</div>
-      <div class="stat-label">Years of Excellence</div>
-    </div> -->
       <div class="stat-item">
         <div class="stat-num">100%</div>
         <div class="stat-label">Practical Learning</div>
@@ -651,20 +695,26 @@
           <strong>Phone</strong>
           <p>+91 93191 50105</p>
           <p>+91 87000 53231</p>
+          <p>+91 82870 89203</p>
+          <p>+91 88265 86711</p>
         </div>
       </div>
       <div class="contact-card">
         <div class="contact-icon">📧</div>
         <div class="contact-detail">
           <strong>Email</strong>
-          <p>prayogbykailasha@gmail.com</p>
+          <p>
+            <a class="email-link" href="mailto:prayogbykailasha@gmail.com" onclick="copyEmail(event)">
+              prayogbykailasha@gmail.com
+            </a>
+          </p>
         </div>
       </div>
       <div class="contact-card">
         <div class="contact-icon">📍</div>
         <div class="contact-detail">
           <strong>Location</strong>
-          <p>India</p>
+          <p>Faridabad, Haryana, India, 121013</p>
         </div>
       </div>
       <div class="contact-card">
@@ -685,6 +735,7 @@
   </footer>
 
   <script>
+    // Scroll reveal
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting) {
@@ -700,6 +751,27 @@
       el.style.transition = 'opacity .5s ease, transform .5s ease';
       observer.observe(el);
     });
+
+    // Copy email + open Gmail
+    function copyEmail(e) {
+      const email = 'prayogbykailasha@gmail.com';
+      // Copy to clipboard
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(email);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = email;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      // Show toast
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+      // Let the mailto: href proceed naturally (opens Gmail/mail app)
+    }
   </script>
 </body>
 
