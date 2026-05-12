@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prayog by Kailasha – Learn. Experiment. Excel.</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #060d1a;
+      --surface: #0d1a2e;
+      --card: #111f35;
+      --cyan: #00e5c8;
+      --cyan-soft: rgba(0, 229, 200, 0.12);
+      --amber: #ffb740;
+      --text: #e8f0fe;
+      --muted: #7a93b4;
+      --border: rgba(0, 229, 200, 0.15);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* Disable all pointer interactions */
+    * {
+      pointer-events: none !important;
+      user-select: none;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      z-index: 0;
+      opacity: .4;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 5rem 5vw;
+      position: relative;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 229, 200, .12) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -55%);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: var(--cyan-soft);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: .4rem 1rem;
+      font-size: .8rem;
+      color: var(--cyan);
+      font-weight: 600;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      margin-bottom: 1.8rem;
+      animation: fadeUp .6s ease both;
+    }
+
+    .hero-badge::before {
+      content: '⚗️';
+      font-size: 1rem;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 6.5vw, 5.2rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+      animation: fadeUp .7s .1s ease both;
+    }
+
+    h1 em {
+      color: var(--cyan);
+      font-style: normal;
+    }
+
+    h1 .line2 {
+      display: block;
+      color: var(--amber);
+    }
+
+    .hero-sub {
+      max-width: 560px;
+      margin: 1.5rem auto 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      font-weight: 300;
+      animation: fadeUp .7s .2s ease both;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 4rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--border);
+      animation: fadeUp .7s .3s ease both;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--cyan);
+    }
+
+    .stat-label {
+      font-size: .8rem;
+      color: var(--muted);
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+
+    /* ── SECTION BASE ── */
+    section {
+      padding: 6rem 5vw;
+      position: relative;
+    }
+
+    .section-tag {
+      display: inline-block;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: .8rem;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.15;
+    }
+
+    .section-title span {
+      color: var(--cyan);
+    }
+
+    /* ── ABOUT ── */
+    #about {
+      background: var(--surface);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      max-width: 1100px;
+      margin: 3rem auto 0;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      margin-top: 1.2rem;
+      font-size: 1rem;
+      font-weight: 300;
+    }
+
+    .about-features {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+    }
+
+    .feature-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      background: var(--cyan-soft);
+      border-radius: 8px;
+      width: 2.5rem;
+      height: 2.5rem;
+      display: grid;
+      place-items: center;
+    }
+
+    .feature-text strong {
+      font-weight: 600;
+      font-size: .95rem;
+    }
+
+    .feature-text p {
+      color: var(--muted);
+      font-size: .85rem;
+      margin-top: .2rem;
+    }
+
+    .about-visual {
+      position: relative;
+    }
+
+    .about-img-wrap {
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+      aspect-ratio: 4/3;
+    }
+
+    .about-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .about-badge {
+      position: absolute;
+      bottom: -1.2rem;
+      left: -1.2rem;
+      background: var(--amber);
+      color: #1a1000;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      padding: 1rem 1.4rem;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(255, 183, 64, .3);
+      font-size: .85rem;
+      line-height: 1.2;
+    }
+
+    /* ── LAB GALLERY ── */
+    #gallery {
+      background: var(--bg);
+    }
+
+    .gallery-intro {
+      max-width: 600px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+
+    .gallery-item {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .gallery-item.big {
+      grid-column: span 2;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      min-height: 220px;
+    }
+
+    .gallery-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(6, 13, 26, .88) 0%, transparent 100%);
+      padding: 1.4rem 1.2rem .9rem;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--cyan);
+      letter-spacing: .4px;
+    }
+
+    /* ── PROGRAMS ── */
+    #programs {
+      background: var(--surface);
+    }
+
+    .programs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+      max-width: 1100px;
+    }
+
+    .program-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem 1.6rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .program-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--cyan);
+    }
+
+    .program-icon {
+      font-size: 2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .program-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .program-card p {
+      color: var(--muted);
+      font-size: .88rem;
+      margin-top: .6rem;
+      line-height: 1.55;
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      background: var(--bg);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      margin-top: 3rem;
+      max-width: 900px;
+    }
+
+    .contact-card {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.4rem 1.6rem;
+    }
+
+    .contact-icon {
+      font-size: 1.3rem;
+      background: var(--cyan-soft);
+      border-radius: 10px;
+      width: 2.8rem;
+      height: 2.8rem;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .contact-detail strong {
+      display: block;
+      font-size: .75rem;
+      color: var(--cyan);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: .3rem;
+    }
+
+    .contact-detail p {
+      font-size: .95rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 5vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--cyan);
+    }
+
+    .footer-logo span {
+      color: var(--amber);
+    }
+
+    footer p {
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(22px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .gallery-item.big {
+        grid-column: span 2;
+      }
+
+      .hero-stats {
+        gap: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .gallery-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery-item.big {
+        grid-column: span 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── HERO ── -->
+  <section id="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-badge">Prayog by Kailasha</div>
+    <h1>
+      Where Curiosity<br>
+      <em>Meets Science</em>
+      <span class="line2">& Discovery Begins</span>
+    </h1>
+    <p class="hero-sub">
+      Hands-on lab experiences, real experiments, and guided learning journeys designed to ignite the scientist in every
+      student.
+    </p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">500+</div>
+        <div class="stat-label">Students Trained</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">30+</div>
+        <div class="stat-label">Experiments</div>
+      </div>
+      <!-- <div class="stat-item">
+      <div class="stat-num">10+</div>
+      <div class="stat-label">Years of Excellence</div>
+    </div> -->
+      <div class="stat-item">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Practical Learning</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT ── -->
+  <section id="about">
+    <div class="about-grid">
+      <div class="about-text">
+        <span class="section-tag">✦ About Us</span>
+        <h2 class="section-title">Learning Through <span>Doing</span></h2>
+        <p>
+          Prayog by Kailasha is a premier science learning platform where students don't just read textbooks — they live
+          the experiments. We believe real understanding comes from real experience.
+        </p>
+        <p>
+          Founded with a passion for practical science education, Prayog bridges the gap between classroom theory and
+          real-world application through state-of-the-art labs, expert mentors, and curiosity-driven programs.
+        </p>
+        <div class="about-features">
+          <div class="feature-item">
+            <div class="feature-icon">🔬</div>
+            <div class="feature-text">
+              <strong>Modern Lab Equipment</strong>
+              <p>Industry-grade tools and instruments for authentic experiments.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🧑‍🏫</div>
+            <div class="feature-text">
+              <strong>Expert Mentors</strong>
+              <p>Qualified scientists and educators who inspire and guide every step.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🏆</div>
+            <div class="feature-text">
+              <strong>Result-Driven Approach</strong>
+              <p>Programs designed for top performance in boards and competitions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="about-visual">
+        <div class="about-img-wrap">
+          <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=700&q=80" alt="Student in lab" />
+        </div>
+        <div class="about-badge">Est. 2014<br>by Kailasha</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── LAB GALLERY ── -->
+  <section id="gallery">
+    <span class="section-tag">✦ Our Labs</span>
+    <div class="gallery-intro">
+      <h2 class="section-title">Step Into Our <span>World-Class</span> Laboratories</h2>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item big">
+        <img src="https://media.gettyimages.com/id/1585548490/photo/digitally-generated-image-of-inspection-laboratory-in-medicine-production-factory.jpg?s=612x612&w=0&k=20&c=GROYpyULcsMVHPEB3SVJLqtRF675W5YPj27AzkqQY-A=" alt="Chemistry Lab" />
+        <div class="gallery-label">Chemistry Lab</div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=500&q=80" alt="Biology Lab" />
+        <div class="gallery-label">Biology Lab</div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=500&q=80" alt="Physics Lab" />
+        <div class="gallery-label">Physics Lab</div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=80" alt="Electronics" />
+        <div class="gallery-label">Electronics</div>
+      </div>
+      <div class="gallery-item big">
+        <img src="https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?w=900&q=80"
+          alt="Students collaborating" />
+        <div class="gallery-label">Collaborative Sessions</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROGRAMS ── -->
+  <section id="programs">
+    <span class="section-tag">✦ Programs</span>
+    <h2 class="section-title">Designed to <span>Inspire</span></h2>
+    <div class="programs-grid">
+      <div class="program-card">
+        <div class="program-icon">⚗️</div>
+        <h3>Chemistry Practicals</h3>
+        <p>Titration, reactions, and qualitative analysis — master every experiment the syllabus demands, and beyond.
+        </p>
+      </div>
+      <div class="program-card">
+        <div class="program-icon">🧬</div>
+        <h3>Biology Lab Sessions</h3>
+        <p>Microscopy, dissections, and ecosystem studies. See life science the way it was meant to be experienced.</p>
+      </div>
+      <div class="program-card">
+        <div class="program-icon">⚡</div>
+        <h3>Physics Experiments</h3>
+        <p>Circuits, optics, mechanics — build intuition for the laws of the universe through guided hands-on work.</p>
+      </div>
+      <div class="program-card">
+        <div class="program-icon">🤖</div>
+        <h3>STEM & Robotics</h3>
+        <p>Code, build, test — nurture problem-solvers and innovators with our cutting-edge STEM programs.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTACT ── -->
+  <section id="contact">
+    <span class="section-tag">✦ Contact Us</span>
+    <h2 class="section-title">Reach <span>Us</span></h2>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="contact-icon">📞</div>
+        <div class="contact-detail">
+          <strong>Phone</strong>
+          <p>+91 93191 50105</p>
+          <p>+91 87000 53231</p>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">📧</div>
+        <div class="contact-detail">
+          <strong>Email</strong>
+          <p>prayogbykailasha@gmail.com</p>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">📍</div>
+        <div class="contact-detail">
+          <strong>Location</strong>
+          <p>India</p>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">🕐</div>
+        <div class="contact-detail">
+          <strong>Working Hours</strong>
+          <p>Mon – Sat: 9:00 AM – 6:00 PM</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-logo">Prayog<span>.</span></div>
+    <p>© 2025 Prayog by Kailasha. All rights reserved.</p>
+    <p style="color: var(--muted); font-size:.8rem;">Built with ❤️ for Science Learners</p>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.program-card, .feature-item, .gallery-item, .contact-card').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity .5s ease, transform .5s ease';
+      observer.observe(el);
+    });
+  </script>
+</body>
+
+</html>
